@@ -68,7 +68,11 @@ extern inline a3real4r a3quaternionCreateDelta(a3real4p q_out, const a3real3p v0
 		//	-> a cross b = sin(angle) * n
 		// Since a quaternion uses half angle, we can solve by using 
 		//	the unit halfway vector as 'b'!!!
-
+		a3vec3 temp;
+		a3real3Sum(temp.v, v0_unit, v1_unit);
+		a3real3Normalize(temp.v);
+		a3real3Cross(q_out, v0_unit, temp.v);
+		q_out[3] = a3real3Dot(v0_unit, temp.v);
 	}
 	return q_out;
 }
@@ -139,22 +143,16 @@ extern inline a3real4r a3quaternionConcat(a3real4p qConcat_out, const a3real4p q
 		//	z = w0z1 + x0y1 - y0x1 + z0w1
 		//	w = w0w1 - x0x1 - y0y1 - z0z1
 
-		//Long Way
-		qConcat_out[0] = qL[3] * qR[0] + qL[0] * qR[3] + qL[1] * qR[2] - qL[2] * qR[1];
-		qConcat_out[1] = qL[3] * qR[1] - qL[0] * qR[2] + qL[1] * qR[3] + qL[2] * qR[0];
-		qConcat_out[2] = qL[3] * qR[2] + qL[0] * qR[1] - qL[1] * qR[0] + qL[2] * qR[3];
-		qConcat_out[3] = qL[3] * qR[3] - qL[0] * qR[0] - qL[1] * qR[1] - qL[2] * qR[2];
+		a3real4 v0, v1;
+		a3real3ProductS(v0, qR, qL[3]);
+		a3real3ProductS(v1, qL, qR[3]);
+		a3real4Add(v0, v1);
 
-		//a3real4 v0, v1;
-		//a3real3ProductS(v0, qR, qL[3]);
-		//a3real3ProductS(v1, qL, qR[3]);
-		//a3real4Add(v0, v1);
+		a3real3Cross(qConcat_out, qR, qL);
+		a3real4Add(qConcat_out, v0);
 
-		//a3real3Cross(qConcat_out, qR, qL);
-		//a3real4Add(qConcat_out, v0);
-
-		//a3real w = qL[3] * qR[3] - a3real3Dot(qL, qR);
-		//qConcat_out[3] = w;
+		a3real w = qL[3] * qR[3] - a3real3Dot(qL, qR);
+		qConcat_out[3] = w;
 	}
 	return qConcat_out;
 }

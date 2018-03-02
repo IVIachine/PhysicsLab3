@@ -240,6 +240,7 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 		a3real3Add(world->particleSpringy->force.v, tmp.v);
 	}
 
+	//Temp axis for objects to rotate on
 	a3vec3 axis;
 	axis.x = 1;
 	axis.y = 1;
@@ -250,7 +251,8 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 	for (i = 0; i < world->particlesActive; ++i)
 	{
 		//integrate
-		a3particleIntegrateEulerExplicit(world->particle + i, dt_r);
+		//a3particleIntegrateEulerExplicit(world->particle + i, dt_r);
+		a3particleIntegrateEulerSemiImplicit(world->particle + i, dt_r);
 
 		//convert force
 		a3real3ProductS(world->particle[i].acceleration.v, world->particle[i].force.v, world->particle[i].massInverse);

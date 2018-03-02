@@ -57,7 +57,7 @@ extern inline void a3particleIntegrateEulerExplicit(a3_Particle *p, const a3real
 extern inline void a3particleIntegrateEulerSemiImplicit(a3_Particle *p, const a3real dt)
 {
 	a3vec3 d;
-
+	a3vec4 r;
 	//	v(t+dt) = v(t) + a(t)dt
 	a3real3Add(p->velocity.v, a3real3ProductS(d.v, p->acceleration.v, dt));
 
@@ -67,6 +67,11 @@ extern inline void a3particleIntegrateEulerSemiImplicit(a3_Particle *p, const a3
 	// ****TO-DO: 
 	//	- integrate angular velocity
 	//	- integrate rotation
+	a3real4Add(p->velocity_a.v, a3real4ProductS(r.v, p->acceleration_a.v, dt));
+	a3real4Add(p->rotation.v, a3real4ProductS(r.v, a3quaternionConcat(r.v, p->velocity_a.v, p->rotation.v), dt * a3realHalf));
+
+	a3real4Normalize(p->rotation.v);
+	a3real4Normalize(p->velocity_a.v);
 }
 
 extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3real dt)
@@ -86,6 +91,8 @@ extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3rea
 	//q(t+dt) = q(t) + q'(t)dt + q" INCOMPLETE
 	//q" = dq/dt = wq/2 -> d(dq/dt)/dt = d2q/dt2 = d(wq/2)dt = (aq + wqw/2)/2
 	//q(t+dt) = q(t) + w(t)q(t)dt/2 + (aq/2 + w(t)^2 q(t)/4)dt^2 / 2
+
+
 }
 
 
