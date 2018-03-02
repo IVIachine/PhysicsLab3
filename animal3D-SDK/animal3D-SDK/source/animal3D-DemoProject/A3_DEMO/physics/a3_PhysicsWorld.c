@@ -123,11 +123,19 @@ void a3physicsInitialize_internal(a3_PhysicsWorld *world)
 	a3particleSetMass(world->particleNormalFeathery, (a3real)0.001f);
 	a3particleSetMass(world->particleSpringy, (a3real)1.0f);
 
+	a3particleSetMass(world->particleBouncy, (a3real)10.0f);
+
+	a3vec3 axis;
+	axis.x = 1;
+	axis.y = 1;
+	axis.z = 0;
+
 	for (unsigned int i = 0; i < world->particlesActive; i++)
 	{
 		a3quaternionCreateIdentity(world->particle[i].rotation.v);
 		a3quaternionCreateIdentity(world->particle[i].velocity_a.v);
 		a3quaternionCreateIdentity(world->particle[i].acceleration_a.v);
+		a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100.0f);
 	}
 }
 
@@ -232,6 +240,11 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 		a3real3Add(world->particleSpringy->force.v, tmp.v);
 	}
 
+	a3vec3 axis;
+	axis.x = 1;
+	axis.y = 1;
+	axis.z = 0;
+
 	// ****TO-DO: 
 	//	- integrate using choice algorithm
 	for (i = 0; i < world->particlesActive; ++i)
@@ -241,7 +254,11 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 
 		//convert force
 		a3real3ProductS(world->particle[i].acceleration.v, world->particle[i].force.v, world->particle[i].massInverse);
-		
+
+		a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100);
+		a3real4ProductS(world->particle[i].acceleration_a.v, world->particle[i].torque.v, world->particle[i].massInverse);
+		a3real4Normalize(world->particle[i].acceleration_a.v);
+
 		//reset force
 		a3particleResetForce(world->particle + i);
 	}

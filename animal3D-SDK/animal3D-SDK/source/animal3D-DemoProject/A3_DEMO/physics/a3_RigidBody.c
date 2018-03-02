@@ -23,7 +23,7 @@
 */
 
 #include "a3_RigidBody.h"
-
+#include <stdio.h>
 
 //-----------------------------------------------------------------------------
 // integration functions
@@ -46,15 +46,10 @@ extern inline void a3particleIntegrateEulerExplicit(a3_Particle *p, const a3real
 	// ****TO-DO: 
 	//	- integrate rotation
 	//	- integrate angular velocity
-	a3vec3 axis;
-	axis.x = 1;
-	axis.y = 0;
-	axis.z = 0;
+	
+	a3real4Add(p->rotation.v, a3real4ProductS(r.v, a3quaternionConcat(r.v, p->velocity_a.v, p->rotation.v), dt * a3realHalf));
+	a3real4Add(p->velocity_a.v, a3real4ProductS(r.v, p->acceleration_a.v, dt));
 
-	a3vec4 accelerationTemp;
-	a3quaternionCreateAxisAngle(accelerationTemp.v, axis.v, (a3real)1.0f);
-	a3real3Add(p->rotation.v, a3real4ProductS(r.v, a3quaternionConcat(r.v, p->velocity_a.v, p->rotation.v), dt * a3realHalf));
-	a3real3Add(p->velocity_a.v, a3real4ProductS(r.v, accelerationTemp.v, dt));
 	a3real4Normalize(p->rotation.v);
 	a3real4Normalize(p->velocity_a.v);
 }
