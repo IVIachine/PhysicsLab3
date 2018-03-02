@@ -133,8 +133,8 @@ void a3physicsInitialize_internal(a3_PhysicsWorld *world)
 	for (unsigned int i = 0; i < world->particlesActive; i++)
 	{
 		a3quaternionCreateIdentity(world->particle[i].rotation.v);
-		a3quaternionCreateIdentity(world->particle[i].velocity_a.v);
-		a3quaternionCreateIdentity(world->particle[i].acceleration_a.v);
+		world->particle[i].velocity_a = a3zeroVec4;
+		world->particle[i].acceleration_a = a3zeroVec4;
 		a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100.0f);
 	}
 }
