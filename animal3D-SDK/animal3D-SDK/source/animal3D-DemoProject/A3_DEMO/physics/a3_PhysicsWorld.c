@@ -252,7 +252,8 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 	{
 		//integrate
 		//a3particleIntegrateEulerExplicit(world->particle + i, dt_r);
-		a3particleIntegrateEulerSemiImplicit(world->particle + i, dt_r);
+		//a3particleIntegrateEulerSemiImplicit(world->particle + i, dt_r);
+		a3particleIntegrateEulerKinematic(world->particle + i, dt_r);
 
 		//convert force
 		a3real3ProductS(world->particle[i].acceleration.v, world->particle[i].force.v, world->particle[i].massInverse);

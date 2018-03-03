@@ -77,7 +77,7 @@ extern inline void a3particleIntegrateEulerSemiImplicit(a3_Particle *p, const a3
 extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3real dt)
 {
 	a3vec3 d;
-
+	a3vec4 r;
 	//	x(t+dt) = x(t) + v(t)dt + a(t)dt2 / 2
 	a3real3Add(p->position.v, a3real3ProductS(d.v, a3real3Sum(d.v, p->velocity.v, a3real3ProductS(d.v, p->acceleration.v, a3realHalf * dt)), dt));
 
@@ -88,11 +88,29 @@ extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3rea
 	//	- integrate rotation using kinematic formula
 	//	- integrate angular velocity
 
-	//q(t+dt) = q(t) + q'(t)dt + q" INCOMPLETE
-	//q" = dq/dt = wq/2 -> d(dq/dt)/dt = d2q/dt2 = d(wq/2)dt = (aq + wqw/2)/2
 	//q(t+dt) = q(t) + w(t)q(t)dt/2 + (aq/2 + w(t)^2 q(t)/4)dt^2 / 2
+	a3vec4 first, second, third, fourth, fifth;
+	a3real4ProductS(first.v, a3quaternionConcat(first.v, p->velocity_a.v, p->rotation.v), a3realHalf * dt);
+	a3real4ProductS(second.v, a3quaternionConcat(second.v, p->acceleration_a.v, p->rotation.v), a3realHalf);
 
+	a3quaternionConcat(fourth.v, p->velocity_a.v, p->velocity_a.v);
+	a3quaternionConcat(fifth.v, fourth.v, p->rotation.v);
+	a3real4ProductS(third.v, fifth.v, a3realQuarter);
 
+	a3real4Add(second.v, third.v);
+	a3real4MulS(second.v, dt * dt);
+	a3real4MulS(second.v, a3realHalf);
+	
+	a3real4Add(first.v, second.v);
+
+	
+
+	a3real4Add(p->rotation.v, first.v);
+
+	a3real4Add(p->velocity_a.v, a3real4ProductS(r.v, p->acceleration_a.v, dt));
+
+	a3real4Normalize(p->rotation.v);
+	a3real4Normalize(p->velocity_a.v);
 }
 
 
