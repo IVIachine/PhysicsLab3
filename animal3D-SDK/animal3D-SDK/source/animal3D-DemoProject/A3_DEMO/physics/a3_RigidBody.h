@@ -66,48 +66,53 @@ struct a3_Particle
 	a3vec3 acceleration;	// a = v' = x" = dv/dt = d2x/dt2
 
 	a3vec3 force;
-	a3vec4 torque;
 	a3real mass, massInverse;
-
-	// ****TO-DO: 
-	//	- add rotation and its derivatives
-	a3vec4 rotation; //q
-	a3vec4 velocity_a; //w(omega) dq/dt = (w)q/2
-	a3vec4 acceleration_a; //alpha dw/dt = a
 };
 
 
 // rb
-//	struct a3_RigidBody
-//	{
-//		a3vec3 position;
-//	};
+	struct a3_RigidBody
+	{
+		a3vec3 position;		// x
+		a3vec3 velocity;		// v = x' = dx/dt
+		a3vec3 acceleration;	// a = v' = x" = dv/dt = d2x/dt2
+
+		a3vec3 force;
+		a3vec4 torque;
+		a3real mass, massInverse;
+
+		// ****TO-DO: 
+		//	- add rotation and its derivatives
+		a3vec4 rotation; //q
+		a3vec4 velocity_a; //w(omega) dq/dt = (w)q/2
+		a3vec4 acceleration_a; //alpha dw/dt = a
+	};
 
 
 //-----------------------------------------------------------------------------
 
 // named Euler methods (described below)
-inline void a3particleIntegrateEulerExplicit(a3_Particle *p, const a3real dt);
-inline void a3particleIntegrateEulerSemiImplicit(a3_Particle *p, const a3real dt);
-inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateEulerExplicit(a3_RigidBody *p, const a3real dt);
+inline void a3particleIntegrateEulerSemiImplicit(a3_RigidBody *p, const a3real dt);
+inline void a3particleIntegrateEulerKinematic(a3_RigidBody *p, const a3real dt);
 
 
 //-----------------------------------------------------------------------------
 
 // set mass
-inline int a3particleSetMass(a3_Particle *p, const a3real mass);
+inline int a3particleSetMass(a3_RigidBody *p, const a3real mass);
 
 // reset force
-inline int a3particleResetForce(a3_Particle *p);
+inline int a3particleResetForce(a3_RigidBody *p);
 
 // reset torque
-inline int a3particleResetTorque(a3_Particle *p);
+inline int a3particleResetTorque(a3_RigidBody *p);
 
 // check if particle is moving
-inline int a3particleIsMoving(const a3_Particle *p);
+inline int a3particleIsMoving(const a3_RigidBody *p);
 
 // check if particle is rotating
-inline int a3ParticleIsRotating(const a3_Particle *p);
+inline int a3ParticleIsRotating(const a3_RigidBody *p);
 
 // calculate critical damping for a particle
 inline a3real a3calcCriticalDamping(const a3real mass, const a3real springCoeff);
@@ -141,22 +146,22 @@ inline a3real3r a3forceDampingLinear(a3real3p f_out, const a3real3p particleVelo
 //-----------------------------------------------------------------------------
 
 //	integrate first order
-inline void a3particleIntegrateFirstOrder(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateFirstOrder(a3_RigidBody *p, const a3real dt);
 
 //	integrate second order
-inline void a3particleIntegrateSecondOrder(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateSecondOrder(a3_RigidBody *p, const a3real dt);
 
 //	integrate displacement
-inline void a3particleIntegrateDisplacement(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateDisplacement(a3_RigidBody *p, const a3real dt);
 
 //	integrate Verlet
-inline void a3particleIntegrateVerlet(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateVerlet(a3_RigidBody *p, const a3real dt);
 
 //	integrate Adams-Bashforth (2nd step)
-inline void a3particleIntegrateAdamsBashforth2(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateAdamsBashforth2(a3_RigidBody *p, const a3real dt);
 
 //	integrate Runge-Kutta (RK4)
-inline void a3particleIntegrateRungeKutta4(a3_Particle *p, const a3real dt);
+inline void a3particleIntegrateRungeKutta4(a3_RigidBody *p, const a3real dt);
 
 
 //-----------------------------------------------------------------------------

@@ -91,9 +91,9 @@ extern "C"
 		// e.g. set of particles
 
 		union {
-			a3_Particle particle[physicsMaxCount_rigidbody];
+			a3_RigidBody rigidbody[physicsMaxCount_rigidbody];
 			struct {
-				a3_Particle
+				a3_RigidBody
 					fixedGround[1],
 					fixedSpringAnchor[1],
 					fixedSpringAnchorOther[1],

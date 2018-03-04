@@ -53,7 +53,7 @@
 void a3physicsInitialize_internal(a3_PhysicsWorld *world)
 {
 	// e.g. reset all particles and/or rigid bodies
-	memset(world->particle, 0, sizeof(world->particle));
+	memset(world->rigidbody, 0, sizeof(world->rigidbody));
 	world->particlesActive = 18;
 	world->t = 0.0;
 
@@ -152,11 +152,11 @@ void a3physicsInitialize_internal(a3_PhysicsWorld *world)
 
 	for (unsigned int i = 0; i < world->particlesActive; i++)
 	{
-		a3quaternionCreateIdentity(world->particle[i].rotation.v);
-		world->particle[i].velocity_a = a3zeroVec4;
-		world->particle[i].acceleration_a = a3zeroVec4;
-		a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100.0f);
-		a3particleSetMass(world->particle + i, (a3real)0.0001f);
+		a3quaternionCreateIdentity(world->rigidbody[i].rotation.v);
+		world->rigidbody[i].velocity_a = a3zeroVec4;
+		world->rigidbody[i].acceleration_a = a3zeroVec4;
+		a3quaternionCreateAxisAngle(world->rigidbody[i].torque.v, axis.v, (a3real)100.0f);
+		a3particleSetMass(world->rigidbody + i, (a3real)0.0001f);
 	}
 
 	a3particleSetMass(world->particleSpringy, (a3real)1.0f);
@@ -280,26 +280,26 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 		//integrate options
 		//a3particleIntegrateEulerExplicit(world->particle + i, dt_r);
 		//a3particleIntegrateEulerSemiImplicit(world->particle + i, dt_r);
-		a3particleIntegrateEulerKinematic(world->particle + i, dt_r);
+		a3particleIntegrateEulerKinematic(world->rigidbody + i, dt_r);
 
 		//convert force
-		a3real3ProductS(world->particle[i].acceleration.v, world->particle[i].force.v, world->particle[i].massInverse);
+		a3real3ProductS(world->rigidbody[i].acceleration.v, world->rigidbody[i].force.v, world->rigidbody[i].massInverse);
 
 		if (i % 2 == 0)
 		{
-			a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100);
+			a3quaternionCreateAxisAngle(world->rigidbody[i].torque.v, axis.v, (a3real)100);
 		}
 		else
 		{
-			a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis2.v, (a3real)100);
+			a3quaternionCreateAxisAngle(world->rigidbody[i].torque.v, axis2.v, (a3real)100);
 		}
 
 		//Add set to acceleration
-		a3real4ProductS(world->particle[i].acceleration_a.v, world->particle[i].torque.v, world->particle[i].massInverse);
-		a3real4Normalize(world->particle[i].acceleration_a.v);
+		a3real4ProductS(world->rigidbody[i].acceleration_a.v, world->rigidbody[i].torque.v, world->rigidbody[i].massInverse);
+		a3real4Normalize(world->rigidbody[i].acceleration_a.v);
 
 		//reset force
-		a3particleResetForce(world->particle + i);
+		a3particleResetForce(world->rigidbody + i);
 	}
 
 	// tilt planes
@@ -315,13 +315,13 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 	// write to state
 	for (i = 0; i < world->particlesActive; ++i)
 	{
-		state->position[i].xyz = world->particle[i].position;
+		state->position[i].xyz = world->rigidbody[i].position;
 	}
 
 	//update rotations
 	for (i = 0; i < world->particlesActive; ++i)
 	{
-		state->rotation[i] = world->particle[i].rotation;
+		state->rotation[i] = world->rigidbody[i].rotation;
 	}
 
 	// write operation is locked

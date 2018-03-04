@@ -42,7 +42,7 @@
 // integration functions
 
 // named Euler methods (described below)
-extern inline void a3particleIntegrateEulerExplicit(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateEulerExplicit(a3_RigidBody *p, const a3real dt)
 {
 	a3vec3 d;
 	a3vec4 r;
@@ -67,7 +67,7 @@ extern inline void a3particleIntegrateEulerExplicit(a3_Particle *p, const a3real
 	a3real4Normalize(p->velocity_a.v);
 }
 
-extern inline void a3particleIntegrateEulerSemiImplicit(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateEulerSemiImplicit(a3_RigidBody *p, const a3real dt)
 {
 	a3vec3 d;
 	a3vec4 r;
@@ -87,7 +87,7 @@ extern inline void a3particleIntegrateEulerSemiImplicit(a3_Particle *p, const a3
 	a3real4Normalize(p->velocity_a.v);
 }
 
-extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateEulerKinematic(a3_RigidBody *p, const a3real dt)
 {
 	a3vec3 d;
 	a3vec4 r;
@@ -132,7 +132,7 @@ extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3rea
 
 //-----------------------------------------------------------------------------
 
-extern inline int a3particleSetMass(a3_Particle *p, const a3real mass)
+extern inline int a3particleSetMass(a3_RigidBody *p, const a3real mass)
 {
 	if (p)
 	{
@@ -157,7 +157,7 @@ extern inline int a3particleSetMass(a3_Particle *p, const a3real mass)
 
 
 // reset force
-extern inline int a3particleResetForce(a3_Particle *p)
+extern inline int a3particleResetForce(a3_RigidBody *p)
 {
 	if (p)
 	{
@@ -170,7 +170,7 @@ extern inline int a3particleResetForce(a3_Particle *p)
 }
 
 // check if particle is moving
-extern inline int a3particleIsMoving(const a3_Particle *p)
+extern inline int a3particleIsMoving(const a3_RigidBody *p)
 {
 	if (p)
 	{
@@ -315,7 +315,7 @@ extern inline a3real3r a3forceDampingLinear(a3real3p f_out, const a3real3p parti
 //-----------------------------------------------------------------------------
 
 //	integrate first order
-extern inline void a3particleIntegrateFirstOrder(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateFirstOrder(a3_RigidBody *p, const a3real dt)
 {
 	// delta value: dx for position, dv for velocity.
 //	a3vec3 dx;
@@ -326,7 +326,7 @@ extern inline void a3particleIntegrateFirstOrder(a3_Particle *p, const a3real dt
 }
 
 //	integrate second order
-extern inline void a3particleIntegrateSecondOrder(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateSecondOrder(a3_RigidBody *p, const a3real dt)
 {
 //	a3vec3 dx;
 //	a3vec3 dv;
@@ -336,7 +336,7 @@ extern inline void a3particleIntegrateSecondOrder(a3_Particle *p, const a3real d
 }
 
 //	integrate displacement
-extern inline void a3particleIntegrateDisplacement(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateDisplacement(a3_RigidBody *p, const a3real dt)
 {
 //	a3vec3 dx;
 //	a3vec3 dv;
@@ -346,7 +346,7 @@ extern inline void a3particleIntegrateDisplacement(a3_Particle *p, const a3real 
 }
 
 //	integrate Verlet
-extern inline void a3particleIntegrateVerlet(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateVerlet(a3_RigidBody *p, const a3real dt)
 {
 	// ****TO-DO: 
 	// Verlet integration: 
@@ -356,7 +356,7 @@ extern inline void a3particleIntegrateVerlet(a3_Particle *p, const a3real dt)
 }
 
 //	integrate Adams-Bashforth (2nd step)
-extern inline void a3particleIntegrateAdamsBashforth2(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateAdamsBashforth2(a3_RigidBody *p, const a3real dt)
 {
 	// ****TO-DO: 
 	// Adams-Bashforth iteration: 
@@ -364,7 +364,7 @@ extern inline void a3particleIntegrateAdamsBashforth2(a3_Particle *p, const a3re
 }
 
 //	integrate Runge-Kutta (RK4)
-extern inline void a3particleIntegrateRungeKutta4(a3_Particle *p, const a3real dt)
+extern inline void a3particleIntegrateRungeKutta4(a3_RigidBody *p, const a3real dt)
 {
 	// ****TO-DO: 
 	// RK4: "the" Runge-Kutta method: 
