@@ -22,6 +22,19 @@
 	Implementation of rigid body.
 */
 
+/*
+	Tyler Chermely 0967813
+	EGP-425-01
+	Lab 3
+	3/3/2018
+
+	I certify that this work is
+	entirely my own. The assessor of this project may reproduce this project
+	and provide copies to other academic staff, and/or communicate a copy of
+	this project to a plagiarism-checking service, which may retain a copy of the
+	project on its database.
+*/
+
 #include "a3_RigidBody.h"
 #include <stdio.h>
 
@@ -89,6 +102,8 @@ extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3rea
 	//	- integrate angular velocity
 
 	//q(t+dt) = q(t) + w(t)q(t)dt/2 + (aq/2 + w(t)^2 q(t)/4)dt^2 / 2
+
+	//integrate rotation first
 	a3vec4 first, second, third, fourth, fifth;
 	a3real4ProductS(first.v, a3quaternionConcat(first.v, p->velocity_a.v, p->rotation.v), a3realHalf * dt);
 	a3real4ProductS(second.v, a3quaternionConcat(second.v, p->acceleration_a.v, p->rotation.v), a3realHalf);
@@ -107,6 +122,7 @@ extern inline void a3particleIntegrateEulerKinematic(a3_Particle *p, const a3rea
 
 	a3real4Add(p->rotation.v, first.v);
 
+	//integrate angular velocity
 	a3real4Add(p->velocity_a.v, a3real4ProductS(r.v, p->acceleration_a.v, dt));
 
 	a3real4Normalize(p->rotation.v);

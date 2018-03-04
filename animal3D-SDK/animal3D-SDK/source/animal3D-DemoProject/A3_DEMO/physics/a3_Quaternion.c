@@ -22,6 +22,19 @@ a3_Quaternion.c
 Quaternion utility implementations.
 */
 
+/*
+	Tyler Chermely 0967813
+	EGP-425-01
+	Lab 3
+	3/3/2018
+
+	I certify that this work is
+	entirely my own. The assessor of this project may reproduce this project
+	and provide copies to other academic staff, and/or communicate a copy of
+	this project to a plagiarism-checking service, which may retain a copy of the
+	project on its database.
+*/
+
 #include "a3_Quaternion.h"
 
 
@@ -34,6 +47,7 @@ extern inline a3real4r a3quaternionCreateIdentity(a3real4p q_out)
 	{
 		// xyz = 0
 		// w = 1
+
 		q_out[0] = q_out[1] = q_out[2] = a3realZero;
 		q_out[3] = a3realOne;
 	}
@@ -68,6 +82,7 @@ extern inline a3real4r a3quaternionCreateDelta(a3real4p q_out, const a3real3p v0
 		//	-> a cross b = sin(angle) * n
 		// Since a quaternion uses half angle, we can solve by using 
 		//	the unit halfway vector as 'b'!!!
+
 		a3vec3 temp;
 		a3real3Sum(temp.v, v0_unit, v1_unit);
 		a3real3Normalize(temp.v);
@@ -88,6 +103,7 @@ extern inline a3real3r a3quaternionGetAxisAngle(a3real3p axis_out, a3real *angle
 		//	-> extract angle by taking inverse cosine of W and double it
 		// else
 		//	-> return all zeros
+
 		if (q[3] >= -1 && q[3] <= 1)
 		{
 			a3real3 tmp;

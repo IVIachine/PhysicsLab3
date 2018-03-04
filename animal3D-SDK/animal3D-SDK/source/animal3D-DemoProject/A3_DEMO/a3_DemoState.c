@@ -27,6 +27,18 @@
 	********************************************
 */
 
+/*
+	Tyler Chermely 0967813
+	EGP-425-01
+	Lab 3
+	3/3/2018
+
+	I certify that this work is
+	entirely my own. The assessor of this project may reproduce this project
+	and provide copies to other academic staff, and/or communicate a copy of
+	this project to a plagiarism-checking service, which may retain a copy of the
+	project on its database.
+*/
 
 #include "a3_DemoState.h"
 
@@ -698,7 +710,7 @@ void a3demo_update(a3_DemoState *demoState, double dt)
 	unsigned int i;
 
 	a3_DemoSceneObject *tmpObject;
-	a3mat4 tmpRotate;
+	//a3mat4 tmpRotate;
 
 	// grab stuff from physics
 	// lock world
@@ -726,8 +738,7 @@ void a3demo_update(a3_DemoState *demoState, double dt)
 			demoState->physicsObjects[i].rotation =
 				worldState->rotation[i];
 
-			// set matrix in related graphics object
-			// identity rotation for now
+			// set matrix in related graphics object based on state
 			a3quaternionConvertToMat4(demoState->physicsObjects[i].modelMat.m, demoState->physicsObjects[i].rotation.v, 
 				demoState->physicsObjects[i].position.v);
 		}
@@ -744,15 +755,15 @@ void a3demo_update(a3_DemoState *demoState, double dt)
 
 
 	// apply local rotations
-	a3real4x4MakeLookAt(tmpRotate.m, 0, demoState->rampStationaryNormal.v, a3zeroVec3.v, a3zVec3.v);
-	tmpRotate.v3 = a3wVec4;
-	a3real4x4ConcatL(demoState->rampStationaryObject->modelMat.m, tmpRotate.m);
-	a3real4x4MakeLookAt(tmpRotate.m, 0, demoState->rampTiltingNormal.v, a3zeroVec3.v, a3zVec3.v);
-	tmpRotate.v3 = a3wVec4;
-	a3real4x4ConcatL(demoState->rampTiltingObject->modelMat.m, tmpRotate.m);
-	a3real4x4MakeLookAt(tmpRotate.m, 0, demoState->rampRotatingNormal.v, a3zeroVec3.v, a3zVec3.v);
-	tmpRotate.v3 = a3wVec4;
-	a3real4x4ConcatL(demoState->rampRotatingObject->modelMat.m, tmpRotate.m);
+	//a3real4x4MakeLookAt(tmpRotate.m, 0, demoState->rampStationaryNormal.v, a3zeroVec3.v, a3zVec3.v);
+	//tmpRotate.v3 = a3wVec4;
+	//a3real4x4ConcatL(demoState->rampStationaryObject->modelMat.m, tmpRotate.m);
+	//a3real4x4MakeLookAt(tmpRotate.m, 0, demoState->rampTiltingNormal.v, a3zeroVec3.v, a3zVec3.v);
+	//tmpRotate.v3 = a3wVec4;
+	//a3real4x4ConcatL(demoState->rampTiltingObject->modelMat.m, tmpRotate.m);
+	//a3real4x4MakeLookAt(tmpRotate.m, 0, demoState->rampRotatingNormal.v, a3zeroVec3.v, a3zVec3.v);
+	//tmpRotate.v3 = a3wVec4;
+	//a3real4x4ConcatL(demoState->rampRotatingObject->modelMat.m, tmpRotate.m);
 
 	// apply local scales
 	// controlled or fixed objects

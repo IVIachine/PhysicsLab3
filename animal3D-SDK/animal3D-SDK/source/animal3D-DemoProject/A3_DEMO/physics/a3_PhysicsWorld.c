@@ -22,6 +22,19 @@
 	Physics world function implementations.
 */
 
+/*
+	Tyler Chermely 0967813
+	EGP-425-01
+	Lab 3
+	3/3/2018
+
+	I certify that this work is
+	entirely my own. The assessor of this project may reproduce this project
+	and provide copies to other academic staff, and/or communicate a copy of
+	this project to a plagiarism-checking service, which may retain a copy of the
+	project on its database.
+*/
+
 
 #include "a3_PhysicsWorld.h"
 
@@ -115,16 +128,23 @@ void a3physicsInitialize_internal(a3_PhysicsWorld *world)
 	world->airDensity = 1.2f;
 	world->fixedLength = 1.0f;
 	world->springCoeff = 2.0f;
+
 	// ****TO-DO: 
 	//	- other initializations
-	a3particleSetMass(world->particleVaccumBowly, (a3real)4.0f);
-	a3particleSetMass(world->particleNormalBowly, (a3real)4.0f);
-	a3particleSetMass(world->particleVaccumFeathery, (a3real)0.001f);
-	a3particleSetMass(world->particleNormalFeathery, (a3real)0.001f);
-	a3particleSetMass(world->particleSpringy, (a3real)1.0f);
+	//a3particleSetMass(world->particleVaccumBowly, (a3real)4.0f);
+	//a3particleSetMass(world->particleNormalBowly, (a3real)4.0f);
+	//a3particleSetMass(world->particleVaccumFeathery, (a3real)0.0001f);
+	//a3particleSetMass(world->particleNormalFeathery, (a3real)0.0001f);
 
-	a3particleSetMass(world->particleBouncy, (a3real)10.0f);
+	//a3particleSetMass(world->particleBouncy, (a3real)10.0f);
+	//a3particleSetMass(world->particleLessBouncy, (a3real)15.0f);
+	//a3particleSetMass(world->particleDraggy, (a3real)10.0f);
 
+	//a3particleSetMass(world->fixedRampRotating, (a3real)100.0f);
+	//a3particleSetMass(world->fixedRampStationary, (a3real)100.0f);
+	//a3particleSetMass(world->fixedRampTilting, (a3real)100.0f);
+
+	//Give temp torque to start
 	a3vec3 axis;
 	axis.x = 1;
 	axis.y = 1;
@@ -136,7 +156,10 @@ void a3physicsInitialize_internal(a3_PhysicsWorld *world)
 		world->particle[i].velocity_a = a3zeroVec4;
 		world->particle[i].acceleration_a = a3zeroVec4;
 		a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100.0f);
+		a3particleSetMass(world->particle + i, (a3real)0.0001f);
 	}
+
+	a3particleSetMass(world->particleSpringy, (a3real)1.0f);
 }
 
 void a3physicsTerminate_internal(a3_PhysicsWorld *world)
@@ -236,21 +259,25 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 		a3forceSpring(tmp.v, world->particleSpringy->position.v, world->fixedSpringAnchor->position.v, world->fixedLength, world->springCoeff);
 		a3real3Add(world->particleSpringy->force.v, tmp.v);
 
-		a3forceDampingLinear(tmp.v, world->particleSpringy->velocity.v, 0.2f);
+		a3forceDampingLinear(tmp.v, world->particleSpringy->velocity.v, 0.1f);
 		a3real3Add(world->particleSpringy->force.v, tmp.v);
 	}
 
 	//Temp axis for objects to rotate on
-	a3vec3 axis;
+	a3vec3 axis, axis2;
 	axis.x = 1;
 	axis.y = 1;
 	axis.z = 0;
+
+	axis2.x = 0;
+	axis2.y = 0;
+	axis2.z = 1;
 
 	// ****TO-DO: 
 	//	- integrate using choice algorithm
 	for (i = 0; i < world->particlesActive; ++i)
 	{
-		//integrate
+		//integrate options
 		//a3particleIntegrateEulerExplicit(world->particle + i, dt_r);
 		//a3particleIntegrateEulerSemiImplicit(world->particle + i, dt_r);
 		a3particleIntegrateEulerKinematic(world->particle + i, dt_r);
@@ -258,7 +285,16 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 		//convert force
 		a3real3ProductS(world->particle[i].acceleration.v, world->particle[i].force.v, world->particle[i].massInverse);
 
-		a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100);
+		if (i % 2 == 0)
+		{
+			a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis.v, (a3real)100);
+		}
+		else
+		{
+			a3quaternionCreateAxisAngle(world->particle[i].torque.v, axis2.v, (a3real)100);
+		}
+
+		//Add set to acceleration
 		a3real4ProductS(world->particle[i].acceleration_a.v, world->particle[i].torque.v, world->particle[i].massInverse);
 		a3real4Normalize(world->particle[i].acceleration_a.v);
 
@@ -267,16 +303,14 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 	}
 
 	// tilt planes
-	world->rampTiltingNormal.y = a3sinr(t_trigParam) * 0.6f;
-	a3real3Normalize(world->rampTiltingNormal.v);
-	world->rampRotatingNormal.y = a3sinr(t_trigParam) * 0.6f;
-	world->rampRotatingNormal.x = a3cosr(t_trigParam) * 0.6f;
-	a3real3Normalize(world->rampRotatingNormal.v);
-
+	//world->rampTiltingNormal.y = a3sinr(t_trigParam) * 0.6f;
+	//a3real3Normalize(world->rampTiltingNormal.v);
+	//world->rampRotatingNormal.y = a3sinr(t_trigParam) * 0.6f;
+	//world->rampRotatingNormal.x = a3cosr(t_trigParam) * 0.6f;
+	//a3real3Normalize(world->rampRotatingNormal.v);
 
 	// accumulate time
 	world->t += dt;
-
 
 	// write to state
 	for (i = 0; i < world->particlesActive; ++i)
@@ -284,6 +318,7 @@ void a3physicsUpdate(a3_PhysicsWorld *world, double dt)
 		state->position[i].xyz = world->particle[i].position;
 	}
 
+	//update rotations
 	for (i = 0; i < world->particlesActive; ++i)
 	{
 		state->rotation[i] = world->particle[i].rotation;
